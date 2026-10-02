@@ -13,13 +13,24 @@ type Tab = 'hunt' | 'goal' | 'terminal' | 'trophies' | 'pack';
 
 const TABS: { id: Tab; icon: string; label: string }[] = [
   { id: 'hunt', icon: '🎯', label: 'ОХОТА' },
-  { id: 'goal', icon: '🏁', label: 'ЦЕЛЬ' },      // ← 🏁 вместо второго 🎯
+  { id: 'goal', icon: '🏁', label: 'ЦЕЛЬ' },
   { id: 'terminal', icon: '📊', label: 'ТЕРМИНАЛ' },
   { id: 'trophies', icon: '📖', label: 'ТРОФЕИ' },
   { id: 'pack', icon: '🐺', label: 'СТАЯ' },
 ];
 
 export default function App() {
+  // ← ПРАВКА: разовая чистка протухших снапшотов + market
+  if (typeof window !== 'undefined') {
+    const SNAPSHOT_SCHEMA_V = '3';
+    if (localStorage.getItem('di_scan_schema') !== SNAPSHOT_SCHEMA_V) {
+      localStorage.removeItem('di_scan_v1');
+      localStorage.removeItem('di_market_v1');
+      localStorage.setItem('di_scan_schema', SNAPSHOT_SCHEMA_V);
+      console.log('[MIGRATION] di_scan_v1 + di_market_v1 очищены (schema → 3)');
+    }
+  }
+
   const [tab, setTab] = useState<Tab>('hunt');
   const [theme, toggleTheme] = useTheme();
   const [dataTransferOpen, setDataTransferOpen] = useState(false);
@@ -59,7 +70,6 @@ export default function App() {
 
     const current = getNotificationPermission();
 
-    // Браузер уже отказал — он не спросит снова. Направляем в настройки.
     if (current === 'denied' && wasPermissionAsked()) {
       setStatusMessage({
         type: 'error',
@@ -111,7 +121,6 @@ export default function App() {
       </header>
 
       <main className="main">
-        {/* Статусное сообщение (замена alert) */}
         {statusMessage && (
           <div
             className={`banner banner-${statusMessage.type === 'ok' ? 'info' : 'error'}`}
@@ -139,7 +148,6 @@ export default function App() {
           </div>
         )}
 
-        {/* In-app баннер SL/TP */}
         <SLTPBanner />
 
         {tab === 'hunt' && <HuntScreen />}

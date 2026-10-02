@@ -15,6 +15,7 @@ const DI_KEYS = [
   'di_notif_permission_asked',
   'di_sltp_log_v1',
   'di_goal_v1',
+  'di_market_v1',
 ];
 
 export interface DISnapshot {

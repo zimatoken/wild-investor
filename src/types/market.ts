@@ -1,6 +1,6 @@
 // Свеча и рыночные данные
 export interface Candle {
-  time: string; // ISO
+  time: string;
   open: number;
   high: number;
   low: number;
@@ -14,6 +14,7 @@ export interface MarketSnapshot {
   ticker: string;
   price: number;
   candles: Candle[];
-  fetchedAt: string; // ISO
+  fetchedAt: string;
+  asOf: string; // ← НОВОЕ: время последней свечи (честность №7)
   source: 'moex' | 'manual';
 }
